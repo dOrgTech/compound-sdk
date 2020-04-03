@@ -1,0 +1,40 @@
+{
+  "name": "compound-sdk",
+  "version": "0.0.1-alpha",
+  "description": "Software development kit to interact with contracts from Compound governance protocol",
+  "main": "dist/compound-sdk.umd.js",
+  "module": "dist/compound-sdk.es5.js",
+  "scripts": {
+    "build": "rm -rf dist && rollup -c rollup.config.ts",
+    "test": "jest"
+  },
+  "dependencies": {
+    "web3": "^1.2.6"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-json": "^4.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@types/jest": "^25.1.5",
+    "@types/web3": "^1.2.2",
+    "husky": "^4.2.3",
+    "jest": "^25.2.6",
+    "prettier": "^2.0.2",
+    "pretty-quick": "^2.0.1",
+    "rollup": "^2.3.2",
+    "rollup-plugin-sourcemaps": "^0.5.0",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "ts-jest": "^25.3.0",
+    "typescript": "^3.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dOrgTech/compound-sdk.git"
+  },
+  "author": "dOrg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dOrgTech/compound-sdk/issues"
+  },
+  "homepage": "https://github.com/dOrgTech/compound-sdk#readme"
+}
