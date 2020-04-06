@@ -1,2 +1,2 @@
-import governanceWrapper from './governanceWrapper'
+import protocol from './compound'
 
