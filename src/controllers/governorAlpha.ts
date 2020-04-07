@@ -5,7 +5,7 @@ import { CompoundContract } from "../Compound/types";
 export class GovernorAlpha extends Controller {
   private contract: CompoundContract;
   private address: string = "0x";
-  private abi: string = "";
+  private abi: string = '[]';
   constructor(protocol: Compound) {
     super(protocol);
     this.contract = this._protocol.getContract(this.address, this.abi);

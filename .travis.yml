@@ -4,6 +4,7 @@ node_js:
 
 before_script:
   - npm i
+  - npm i -g ganache-cli
 
 script:
   - npm run test
