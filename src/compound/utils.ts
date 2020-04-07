@@ -1,8 +1,8 @@
 import { EthereumProvider, CompoundContract, ITransaction } from "./types";
 
-export const getAccount = (provider: EthereumProvider) => {
+export const getAccount = async (provider: EthereumProvider) => {
   const signer = provider.getSigner();
-  return signer.getAddress();
+  return await signer.getAddress();
 };
 
 export const getSigner = (provider: EthereumProvider) => {

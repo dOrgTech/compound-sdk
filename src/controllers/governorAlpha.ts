@@ -12,8 +12,8 @@ export class GovernorAlpha extends Controller {
   }
 
   public delegate() {
-    // const txObject: any = {}
-    // this._protocol.sendTx(this.contract, txObject)
+    const txObject: any = {}
+    this._protocol.sendTx(this.contract, txObject)
   }
 
   public borrow() {}
