@@ -5,7 +5,7 @@ import {
   Address,
   CompoundContract,
   ITransaction,
-} from "../../src/Compound/types";
+} from "../../src/compound/types";
 import Compound from "../../src/compound";
 
 let provider: EthereumProvider;

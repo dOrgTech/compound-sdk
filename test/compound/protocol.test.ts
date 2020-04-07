@@ -1,5 +1,5 @@
-import Compound from "../../src/Compound";
-import { CompoundContract } from "../../src/Compound/types";
+import Compound from "../../src/compound";
+import { CompoundContract } from "../../src/compound/types";
 
 describe("Compound ", () => {
   it("Create protocol instance ", () => {
