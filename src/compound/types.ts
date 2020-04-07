@@ -1,11 +1,11 @@
-import { ContractFactory } from "ethers";
-import { AsyncSendable, JsonRpcProvider } from "ethers/providers";
+import { Contract } from "ethers";
+import { AsyncSendable, Web3Provider } from "ethers/providers";
 
 export type Address = string;
 export type Date = number;
 export type Hash = string;
-export type Web3Provider = string | AsyncSendable;
+export type EthereumObject = AsyncSendable;
 export type IPFSProvider = string;
 
-export class JSONProvider extends JsonRpcProvider {}
-export class NewContract extends ContractFactory {}
+export class EthereumProvider extends Web3Provider {}
+export class CompoundContract extends Contract {}

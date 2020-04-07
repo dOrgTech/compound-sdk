@@ -1,24 +1,23 @@
-import { Web3Provider, JSONProvider, NewContract } from "./types";
+import { EthereumProvider, CompoundContract, EthereumObject } from "./types";
 
-import { Comp } from "../comp";
-import { GovernorAlpha } from "../governorAlpha";
+import { Comp } from "../controllers/comp";
+import { GovernorAlpha } from "../controllers/governorAlpha";
 
 export default class Compound {
-  private _provider: Web3Provider;
+  private _provider: EthereumProvider;
 
-  constructor(provider: string) {
-    this._provider = new JSONProvider(provider);
+  public governorAlpha = new GovernorAlpha(this);
+  public comp = new Comp(this);
+
+  constructor(ethereumObject: EthereumObject) {
+    this._provider = new EthereumProvider(ethereumObject);
   }
 
-  private sendTx() {}
-
-  private newContract(address: string, abi: string) {
-    return new NewContract(address, abi);
+  public getContract(address: string, abi: string) {
+    return new CompoundContract(address, abi, this._provider.getSigner());
   }
-
-  private callMethod() {}
-
-  // public governorAlpha() {}
-  // public comp() {}
+  
+  public callTx() {}
+  public sendTx() {}
   // public cToken() {}
 }
