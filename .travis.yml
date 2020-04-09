@@ -5,7 +5,9 @@ node_js:
 before_script:
   - npm i
   - npm i -g ganache-cli
-
-script:
+  
+  script:
+  - ganache-cli
+  - sleep 3
   - npm run test
   - npm run build

@@ -1,7 +1,7 @@
 import { Contract } from "ethers/contract";
 import {
   AsyncSendable,
-  Web3Provider,
+  JsonRpcProvider,
   JsonRpcSigner,
   TransactionResponse,
 } from "ethers/providers";
@@ -23,7 +23,7 @@ export type Date = number;
 export type Hash = string;
 export type EthereumObject = AsyncSendable;
 
-export class EthereumProvider extends Web3Provider {}
+export class EthereumProvider extends JsonRpcProvider {}
 export class CompoundContract extends Contract {}
 
 export { JsonRpcSigner, TransactionResponse };

@@ -20,3 +20,7 @@ export const estimateGas = async (
 export const getNonce = async (provider: EthereumProvider, address: string) => {
   return await provider.getTransactionCount(address);
 };
+
+export const fromEthToWei = async () => {};
+
+export const isReadMethod = () => {};

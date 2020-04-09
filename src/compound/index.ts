@@ -15,8 +15,8 @@ export default class Compound {
   private _provider: EthereumProvider;
   // public governorAlpha = new GovernorAlpha(this);
   
-  constructor(ethereumObject: EthereumObject) {
-    this._provider = new EthereumProvider(ethereumObject);
+  constructor() {
+    this._provider = new EthereumProvider();
   }
 
   // public comp = new Comp(this);
