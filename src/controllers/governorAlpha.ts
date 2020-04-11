@@ -30,6 +30,14 @@ export class GovernorAlpha extends Controller {
     return this._protocol.sendTx(this.contract, txObject);
   }
 
+  public queue(proposalId: number) {
+    const txObject: ITransaction = {
+      method: "queue",
+      args: [proposalId],
+    };
+    return this._protocol.sendTx(this.contract, txObject);
+  }
+
   // public delegate() {
   //   const txObject: any = {};
   //   this._protocol.sendTx(this.contract, txObject);

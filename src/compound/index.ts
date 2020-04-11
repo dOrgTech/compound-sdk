@@ -44,10 +44,10 @@ export default class Compound {
       try {
         gasLimit = await estimateGas(contract, tx);
       } catch (error) {
-        console.log(error);
-        throw new Error(error);
+        throw new Error(error.message);
       }
     }
+
     tx.opts!["gasLimit"] = gasLimit;
 
     try {
@@ -55,8 +55,7 @@ export default class Compound {
       await response.wait();
       return response;
     } catch (error) {
-      console.log("there");
-      throw new Error(error);
+      throw new Error(error.message);
     }
   }
 
