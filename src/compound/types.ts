@@ -1,15 +1,14 @@
 import { Contract } from "ethers/contract";
 import {
   AsyncSendable,
-  JsonRpcProvider,
   JsonRpcSigner,
   TransactionResponse,
+  Web3Provider,
 } from "ethers/providers";
 
 export interface ITransaction {
-  contract: CompoundContract;
   method: string;
-  args: any[];
+  args: Array<string | number | boolean>;
   opts?: {
     gasLimit?: number;
     gasPrice?: number;
@@ -23,7 +22,7 @@ export type Date = number;
 export type Hash = string;
 export type EthereumObject = AsyncSendable;
 
-export class EthereumProvider extends JsonRpcProvider {}
+export class EthereumProvider extends Web3Provider {}
 export class CompoundContract extends Contract {}
 
 export { JsonRpcSigner, TransactionResponse };

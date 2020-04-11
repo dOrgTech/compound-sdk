@@ -1,3 +1,4 @@
+import { formatEther } from "ethers/utils";
 import { EthereumProvider, CompoundContract, ITransaction } from "./types";
 
 export const getAccount = async (provider: EthereumProvider) => {
@@ -21,6 +22,8 @@ export const getNonce = async (provider: EthereumProvider, address: string) => {
   return await provider.getTransactionCount(address);
 };
 
-export const fromEthToWei = async () => {};
+export const toEther = (wei: string) => {
+  return formatEther(wei);
+};
 
 export const isReadMethod = () => {};

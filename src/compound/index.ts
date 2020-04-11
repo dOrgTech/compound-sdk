@@ -13,16 +13,19 @@ import { GovernorAlpha } from "../controllers/governorAlpha";
 
 export default class Compound {
   private _provider: EthereumProvider;
-  // public governorAlpha = new GovernorAlpha(this);
-  
-  constructor() {
-    this._provider = new EthereumProvider();
+
+  constructor(ethereumObject: EthereumObject) {
+    this._provider = new EthereumProvider(ethereumObject);
   }
 
-  // public comp = new Comp(this);
   // public cToken() {}
+
   public governorAlpha() {
-    return new GovernorAlpha(this)
+    return new GovernorAlpha(this);
+  }
+
+  public comp() {
+    return new Comp(this);
   }
 
   public getContract(address: string, abi: string) {
@@ -35,12 +38,13 @@ export default class Compound {
     tx: ITransaction
   ): Promise<TransactionResponse | Error> {
     let gasLimit: number = 0;
-    if (tx.opts!.gasLimit) {
-      gasLimit = tx.opts!.gasLimit;
+    if (tx.opts?.gasLimit) {
+      gasLimit = tx.opts.gasLimit;
     } else {
       try {
         gasLimit = await estimateGas(contract, tx);
       } catch (error) {
+        console.log(error);
         throw new Error(error);
       }
     }
@@ -51,6 +55,7 @@ export default class Compound {
       await response.wait();
       return response;
     } catch (error) {
+      console.log("there");
       throw new Error(error);
     }
   }
@@ -60,7 +65,7 @@ export default class Compound {
     tx: ITransaction
   ): Promise<TransactionResponse | Error> {
     try {
-      return await contract[tx.method](...tx.args, tx.opts);
+      return await contract[tx.method](...tx.args);
     } catch (error) {
       throw new Error(error);
     }

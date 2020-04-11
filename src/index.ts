@@ -1,2 +1,3 @@
-import protocol from './compound'
+import Compound from "./compound";
 
+export default Compound;
