@@ -1,2 +1,3 @@
-import governanceWrapper from './governanceWrapper'
+import Compound from "./compound";
 
+export default Compound;
