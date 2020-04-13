@@ -1,6 +1,6 @@
 import Compound from "../compound";
 import { Controller } from "./core";
-import { CompoundContract, ITransaction } from "../compound/types";
+import { CompoundContract, ITransaction, Address } from "../compound/types";
 import abi from "../../contracts/governorAlpha.json";
 
 export class GovernorAlpha extends Controller {
@@ -34,6 +34,20 @@ export class GovernorAlpha extends Controller {
     const txObject: ITransaction = {
       method: "queue",
       args: [proposalId],
+    };
+    return this._protocol.sendTx(this.contract, txObject);
+  }
+
+  public propose(
+    address: Array<Address>,
+    values: Array<number>,
+    signatures: Array<string>,
+    calldatas: Array<string>,
+    description: string
+  ) {
+    const txObject: ITransaction = {
+      method: "propose",
+      args: [address, values, signatures, calldatas, description],
     };
     return this._protocol.sendTx(this.contract, txObject);
   }
