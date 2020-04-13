@@ -36,7 +36,7 @@ export default class Compound {
   public async sendTx(
     contract: CompoundContract,
     tx: ITransaction
-  ): Promise<TransactionResponse | Error> {
+  ): Promise<TransactionResponse> {
     let gasLimit: number = 0;
     if (tx.opts?.gasLimit) {
       gasLimit = tx.opts.gasLimit;
@@ -48,10 +48,13 @@ export default class Compound {
       }
     }
 
-    tx.opts!["gasLimit"] = gasLimit;
+    const options = {
+      ...tx.opts,
+      gasLimit: gasLimit ? gasLimit : 1000000,
+    };
 
     try {
-      const response = await contract[tx.method](...tx.args, tx.opts);
+      const response = await contract[tx.method](...tx.args, options);
       await response.wait();
       return response;
     } catch (error) {
@@ -62,7 +65,7 @@ export default class Compound {
   public async callTx(
     contract: CompoundContract,
     tx: ITransaction
-  ): Promise<TransactionResponse | Error> {
+  ): Promise<any> {
     try {
       return await contract[tx.method](...tx.args);
     } catch (error) {

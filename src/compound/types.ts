@@ -8,7 +8,7 @@ import {
 
 export interface ITransaction {
   method: string;
-  args: Array<string | number | boolean>;
+  args: Array<string | number | boolean | (string | number)[]>;
   opts?: {
     gasLimit?: number;
     gasPrice?: number;

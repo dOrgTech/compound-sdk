@@ -3,11 +3,8 @@ node_js:
   - 10
 
 before_script:
-  - npm i
-  - npm i -g ganache-cli
-  
-  script:
-  - ganache-cli
-  - sleep 3
-  - npm run test
-  - npm run build
+  - yarn
+
+script:
+  - yarn test
+  - yarn build

@@ -1,5 +1,12 @@
 import { formatEther } from "ethers/utils";
-import { EthereumProvider, CompoundContract, ITransaction } from "./types";
+import { ContractFactory } from "ethers/contract";
+
+import {
+  EthereumProvider,
+  CompoundContract,
+  ITransaction,
+  JsonRpcSigner,
+} from "./types";
 
 export const getAccount = async (provider: EthereumProvider) => {
   const signer = provider.getSigner();
@@ -24,6 +31,18 @@ export const getNonce = async (provider: EthereumProvider, address: string) => {
 
 export const toEther = (wei: string) => {
   return formatEther(wei);
+};
+
+export const deployContract = async (
+  abi: string,
+  bytecode: string,
+  signer: JsonRpcSigner,
+  params: any
+) => {
+  let factory = new ContractFactory(abi, bytecode, signer);
+  let contract = await factory.deploy(params);
+  await contract.deployed();
+  return contract;
 };
 
 export const isReadMethod = () => {};
