@@ -6,7 +6,7 @@ import {
   ITransaction,
   TransactionResponse,
 } from "./types";
-import { getSigner, estimateGas } from "./utils";
+import { getSigner, estimateGas, signMessage } from "./utils";
 
 import { Comp } from "../controllers/comp";
 import { GovernorAlpha } from "../controllers/governorAlpha";
@@ -35,7 +35,8 @@ export default class Compound {
 
   public async sendTx(
     contract: CompoundContract,
-    tx: ITransaction
+    tx: ITransaction,
+    offline: boolean = false
   ): Promise<TransactionResponse> {
     let gasLimit: number = 0;
     if (tx.opts?.gasLimit) {
@@ -54,6 +55,17 @@ export default class Compound {
     };
 
     try {
+      if (offline) {
+        const params = {
+          address: "0x61FfE691821291D02E9Ba5D33098ADcee71a3a17",
+        };
+        const signature: Array<string | number> = await signMessage(
+          this._provider,
+          contract,
+          params // params needs to be dynamic
+        );
+        tx.args.push(...signature);
+      }
       const response = await contract[tx.method](...tx.args, options);
       await response.wait();
       return response;

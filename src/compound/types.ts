@@ -5,6 +5,7 @@ import {
   TransactionResponse,
   Web3Provider,
 } from "ethers/providers";
+import { BigNumber } from "ethers/utils";
 
 export interface ITransaction {
   method: string;
@@ -18,11 +19,19 @@ export interface ITransaction {
 }
 
 export type Address = string;
-export type Date = number;
-export type Hash = string;
+
 export type EthereumObject = AsyncSendable;
 
 export class EthereumProvider extends Web3Provider {}
 export class CompoundContract extends Contract {}
 
-export { JsonRpcSigner, TransactionResponse };
+export const domain = [
+  { name: "name", type: "string" },
+  { name: "version", type: "string" },
+  { name: "chainId", type: "uint256" },
+  { name: "verifyingContract", type: "address" },
+];
+
+export const DelegatedAddress = [{ name: "account", type: "address" }];
+
+export { JsonRpcSigner, TransactionResponse, BigNumber };

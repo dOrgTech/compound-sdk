@@ -1,15 +1,14 @@
 import Compound from "../compound";
 import { Controller } from "./core";
 import { CompoundContract, ITransaction, Address } from "../compound/types";
-import abi from "../../contracts/governorAlpha.json";
+import { abi } from "../../contracts/governorAlpha";
 
 export class GovernorAlpha extends Controller {
   private contract: CompoundContract;
   private address: string = "0xc5BFEd3Bb38a3C4078d4f130F57Ca4c560551d45"; // ropsten address
-  private abi: string = JSON.stringify(abi);
   constructor(protocol: Compound) {
     super(protocol);
-    this.contract = this._protocol.getContract(this.address, this.abi);
+    this.contract = this._protocol.getContract(this.address, abi);
   }
 
   // all methods from governor alpha.sol
@@ -51,11 +50,6 @@ export class GovernorAlpha extends Controller {
     };
     return this._protocol.sendTx(this.contract, txObject);
   }
-
-  // public delegate() {
-  //   const txObject: any = {};
-  //   this._protocol.sendTx(this.contract, txObject);
-  // }
 
   // public borrow() {}
 }
