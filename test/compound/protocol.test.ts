@@ -17,7 +17,7 @@ beforeAll(async () => {
   ]);
 });
 
-describe("Compound ", () => {
+describe("Compound with web3provider", () => {
   it("Create protocol instance ", () => {
     const protocol = new Compound(ethereumObject);
     expect(protocol).toBeInstanceOf(Compound);
@@ -25,6 +25,13 @@ describe("Compound ", () => {
 
   it("Should throw error because no provider was given ", async () => {
     expect(() => new Compound({})).toThrowError("invalid web3Provider");
+  });
+
+  it("Should throw error because provider was already given", async () => {
+    const protocol = new Compound(ethereumObject);
+    expect(() => protocol.updateProvider(ethereumObject)).toThrowError(
+      "Provider already instanciated"
+    );
   });
 
   it("New contract instance ", () => {
@@ -59,5 +66,18 @@ describe("Compound ", () => {
     };
     const result = await protocol.sendTx(contractInstance, txObject);
     expect(result.hash).toMatch("0x");
+  });
+});
+
+describe("Compoud wth JSON provider", () => {
+  it("Protocol instance when passing url", () => {
+    const protocol = new Compound("http://localhost:8545");
+    expect(protocol).toBeInstanceOf(Compound);
+  });
+
+  it("Update provider to send transactions", () => {
+    const protocol = new Compound("http://localhost:8545");
+    const updateProtocol = protocol.updateProvider(ethereumObject);
+    expect(updateProtocol).toBeTruthy();
   });
 });

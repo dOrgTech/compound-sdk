@@ -1,36 +1,38 @@
-import { formatEther } from "ethers/utils";
+import { formatEther, BigNumber } from "ethers/utils";
 import { ContractFactory } from "ethers/contract";
 import {
   EthereumProvider,
   CompoundContract,
   ITransaction,
   JsonRpcSigner,
-  domain,
-  DelegatedAddress,
+  // Domain,
+  // DelegatedAddress,
 } from "./types";
 
-export const getAccount = async (provider: EthereumProvider) => {
+export const getAccount = async (
+  provider: EthereumProvider
+): Promise<string> => {
   const signer = provider.getSigner();
   return await signer.getAddress();
 };
 
-export const getSigner = (provider: EthereumProvider) => {
+export const getSigner = (provider: EthereumProvider): JsonRpcSigner => {
   return provider.getSigner();
 };
 
 export const estimateGas = async (
   contract: CompoundContract,
   tx: ITransaction
-) => {
+): Promise<number> => {
   const estimation = await contract.estimate[tx.method](...tx.args);
   return estimation.toNumber();
 };
 
-export const getNonce = async (provider: EthereumProvider, address: string) => {
-  return await provider.getTransactionCount(address);
+export const getNonce = async (contract: CompoundContract): Promise<string> => {
+  return await contract.getTransactionCount(contract.address);
 };
 
-export const toEther = (wei: string) => {
+export const toEther = (wei: string): string => {
   return formatEther(wei);
 };
 
@@ -39,7 +41,7 @@ export const deployContract = async (
   bytecode: string,
   signer: JsonRpcSigner,
   params: Array<any>
-) => {
+): Promise<CompoundContract> => {
   let factory = new ContractFactory(abi, bytecode, signer);
   let contract = await factory.deploy(...params);
   await contract.deployed();
@@ -50,32 +52,23 @@ export const signMessage = async (
   provider: EthereumProvider,
   contract: CompoundContract,
   params: Object
-) => {
+): Promise<(string | number)[]> => {
   const from = await getAccount(provider);
   try {
+    const network = await provider.getNetwork();
     const domainData = {
-      name: "compound",
+      name: "Compound Protocol",
       version: "1",
-      chainId: 3, // make this dynamic
+      chainId: network.chainId,
       verifyingContract: contract.address,
     };
-    const data = JSON.stringify({
-      types: {
-        EIP712Domain: domain,
-        Message: DelegatedAddress,
-      },
-      domain: domainData,
-      primaryType: "Message",
-      message: params,
-    });
+    const data = JSON.stringify(params);
     const signature = await provider.send("eth_signTypedData_v3", [from, data]);
+    const v = parseInt(signature.substring(128, 130), 16);
     const r = "0x" + signature.substring(0, 64);
     const s = "0x" + signature.substring(64, 128);
-    const v = parseInt(signature.substring(128, 130), 16);
-    const nonce = await getNonce(provider, contract.address);
-    const expiry: number = Date.now() + 3600000;
-    return [r, s, v, nonce, expiry];
+    return [v, r, s];
   } catch (e) {
-    return [];
+    throw new Error(e);
   }
 };

@@ -10,25 +10,38 @@ import { getSigner, estimateGas, signMessage } from "./utils";
 
 import { Comp } from "../controllers/comp";
 import { GovernorAlpha } from "../controllers/governorAlpha";
+import { JsonRpcProvider } from "ethers/providers";
 
 export default class Compound {
   private _provider: EthereumProvider;
 
-  constructor(ethereumObject: EthereumObject) {
-    this._provider = new EthereumProvider(ethereumObject);
+  constructor(ethereumObject: EthereumObject | String) {
+    if (typeof ethereumObject === "string") {
+      this._provider = new JsonRpcProvider(ethereumObject) as EthereumProvider;
+    } else {
+      this._provider = new EthereumProvider(ethereumObject as EthereumObject);
+    }
   }
 
   // public cToken() {}
 
-  public governorAlpha() {
+  public updateProvider(ethereumObject: EthereumObject): Compound {
+    if (this._provider._web3Provider) {
+      throw new Error("Provider already instanciated");
+    }
+    this._provider = new EthereumProvider(ethereumObject);
+    return this;
+  }
+
+  public governorAlpha(): GovernorAlpha {
     return new GovernorAlpha(this);
   }
 
-  public comp() {
+  public comp(): Comp {
     return new Comp(this);
   }
 
-  public getContract(address: string, abi: string) {
+  public getContract(address: string, abi: string): CompoundContract {
     const account: JsonRpcSigner = getSigner(this._provider);
     return new CompoundContract(address, abi, account);
   }
@@ -36,36 +49,28 @@ export default class Compound {
   public async sendTx(
     contract: CompoundContract,
     tx: ITransaction,
-    offline: boolean = false
+    signature: boolean = false
   ): Promise<TransactionResponse> {
     let gasLimit: number = 0;
-    if (tx.opts?.gasLimit) {
-      gasLimit = tx.opts.gasLimit;
-    } else {
-      try {
-        gasLimit = await estimateGas(contract, tx);
-      } catch (error) {
-        throw new Error(error.message);
-      }
-    }
-
-    const options = {
-      ...tx.opts,
-      gasLimit: gasLimit ? gasLimit : 1000000,
-    };
-
     try {
-      if (offline) {
-        const params = {
-          address: "0x61FfE691821291D02E9Ba5D33098ADcee71a3a17",
-        };
-        const signature: Array<string | number> = await signMessage(
+      if (signature) {
+        const signatureInformation: Array<string | number> = await signMessage(
           this._provider,
           contract,
-          params // params needs to be dynamic
+          tx.args
         );
-        tx.args.push(...signature);
+        tx.args.push(...signatureInformation);
       }
+
+      gasLimit = tx.opts?.gasLimit
+        ? tx.opts.gasLimit
+        : await estimateGas(contract, tx);
+
+      const options = {
+        ...tx.opts,
+        gasLimit: gasLimit ? gasLimit : 1000000,
+      };
+
       const response = await contract[tx.method](...tx.args, options);
       await response.wait();
       return response;

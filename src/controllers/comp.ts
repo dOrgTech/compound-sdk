@@ -2,6 +2,7 @@ import Compound from "../compound";
 import { Controller } from "./core";
 import { CompoundContract, Address, ITransaction } from "../compound/types";
 import { abi } from "../../contracts/comp";
+import { getNonce } from "../compound/utils";
 
 export class Comp extends Controller {
   private contract: CompoundContract;
@@ -15,6 +16,16 @@ export class Comp extends Controller {
     const txObject: ITransaction = {
       method: "delegate",
       args: [address],
+    };
+    this._protocol.sendTx(this.contract, txObject, false);
+  }
+
+  public async delegateBySignature(address: Address) {
+    const nonce: string = await getNonce(this.contract);
+    const expiry: number = Date.now() + 3600000;
+    const txObject: ITransaction = {
+      method: "delegateBySignature",
+      args: [address, nonce, expiry],
     };
     this._protocol.sendTx(this.contract, txObject, true);
   }
