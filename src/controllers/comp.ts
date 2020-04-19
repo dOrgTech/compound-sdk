@@ -26,9 +26,9 @@ export class Comp extends Controller {
     this._protocol.sendTx(this.contract, txObject);
   }
 
-  public delegateBySignature(address: Address) {
+  public async delegateBySignature(address: Address) {
     const nonce: string = "0"; //await getContractNonce(this.contract);
-    const expiry: number = Date.now() + 3600000;
+    const expiry: number = Date.now() + 3600000; // expires in one (1) hour
     const txObject: ITransaction = {
       method: "delegateBySig",
       args: [address, nonce, expiry],
@@ -42,6 +42,6 @@ export class Comp extends Controller {
       paramsDefinition: DelegatedAddress,
       paramsValues: params,
     };
-    this._protocol.sendTx(this.contract, txObject, signatureObject);
+    return this._protocol.sendTx(this.contract, txObject, signatureObject);
   }
 }
