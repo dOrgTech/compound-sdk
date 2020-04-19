@@ -2,36 +2,18 @@ import {
   EthereumProvider,
   CompoundContract,
   EthereumObject,
-  JsonRpcSigner,
+  Signer,
   ITransaction,
   TransactionResponse,
+  SignatureType,
+  JSONProvider,
 } from "./types";
 import { getSigner, estimateGas, signMessage } from "./utils";
-
 import { Comp } from "../controllers/comp";
 import { GovernorAlpha } from "../controllers/governorAlpha";
-import { JsonRpcProvider } from "ethers/providers";
 
 export default class Compound {
   private _provider: EthereumProvider;
-
-  constructor(ethereumObject: EthereumObject | String) {
-    if (typeof ethereumObject === "string") {
-      this._provider = new JsonRpcProvider(ethereumObject) as EthereumProvider;
-    } else {
-      this._provider = new EthereumProvider(ethereumObject as EthereumObject);
-    }
-  }
-
-  // public cToken() {}
-
-  public updateProvider(ethereumObject: EthereumObject): Compound {
-    if (this._provider._web3Provider) {
-      throw new Error("Provider already instanciated");
-    }
-    this._provider = new EthereumProvider(ethereumObject);
-    return this;
-  }
 
   public governorAlpha(): GovernorAlpha {
     return new GovernorAlpha(this);
@@ -41,23 +23,41 @@ export default class Compound {
     return new Comp(this);
   }
 
+  constructor(ethereumObject: EthereumObject | string) {
+    if (typeof ethereumObject === "string") {
+      this._provider = new JSONProvider(ethereumObject) as EthereumProvider;
+    } else {
+      this._provider = new EthereumProvider(ethereumObject as EthereumObject);
+    }
+  }
+
+  public updateProvider(ethereumObject: EthereumObject): Compound {
+    if (this._provider._web3Provider) {
+      throw new Error("Provider already instantiated");
+    }
+    this._provider = new EthereumProvider(ethereumObject);
+    return this;
+  }
+
   public getContract(address: string, abi: string): CompoundContract {
-    const account: JsonRpcSigner = getSigner(this._provider);
+    const account: Signer = getSigner(this._provider);
     return new CompoundContract(address, abi, account);
   }
 
   public async sendTx(
     contract: CompoundContract,
     tx: ITransaction,
-    signature: boolean = false
+    signatureObject: SignatureType | null = null
   ): Promise<TransactionResponse> {
     let gasLimit: number = 0;
     try {
-      if (signature) {
+      if (signatureObject) {
+        const { paramsDefinition, paramsValues } = signatureObject;
         const signatureInformation: Array<string | number> = await signMessage(
           this._provider,
           contract,
-          tx.args
+          paramsDefinition,
+          paramsValues
         );
         tx.args.push(...signatureInformation);
       }

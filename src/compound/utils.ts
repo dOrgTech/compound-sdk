@@ -1,12 +1,12 @@
-import { formatEther, BigNumber } from "ethers/utils";
+import { formatEther } from "ethers/utils";
 import { ContractFactory } from "ethers/contract";
 import {
   EthereumProvider,
   CompoundContract,
   ITransaction,
-  JsonRpcSigner,
-  // Domain,
-  // DelegatedAddress,
+  Signer,
+  Domain,
+  DomainDataType,
 } from "./types";
 
 export const getAccount = async (
@@ -16,7 +16,7 @@ export const getAccount = async (
   return await signer.getAddress();
 };
 
-export const getSigner = (provider: EthereumProvider): JsonRpcSigner => {
+export const getSigner = (provider: EthereumProvider): Signer => {
   return provider.getSigner();
 };
 
@@ -28,7 +28,9 @@ export const estimateGas = async (
   return estimation.toNumber();
 };
 
-export const getNonce = async (contract: CompoundContract): Promise<string> => {
+export const getContractNonce = async (
+  contract: CompoundContract
+): Promise<string> => {
   return await contract.getTransactionCount(contract.address);
 };
 
@@ -39,7 +41,7 @@ export const toEther = (wei: string): string => {
 export const deployContract = async (
   abi: string,
   bytecode: string,
-  signer: JsonRpcSigner,
+  signer: Signer,
   params: Array<any>
 ): Promise<CompoundContract> => {
   let factory = new ContractFactory(abi, bytecode, signer);
@@ -51,7 +53,8 @@ export const deployContract = async (
 export const signMessage = async (
   provider: EthereumProvider,
   contract: CompoundContract,
-  params: Object
+  method: Array<object>,
+  params: object
 ): Promise<(string | number)[]> => {
   const from = await getAccount(provider);
   try {
@@ -62,13 +65,33 @@ export const signMessage = async (
       chainId: network.chainId,
       verifyingContract: contract.address,
     };
-    const data = JSON.stringify(params);
-    const signature = await provider.send("eth_signTypedData_v3", [from, data]);
-    const v = parseInt(signature.substring(128, 130), 16);
+    const signatureParams = getSignatureParams(domainData, params, method);
+    const data = JSON.stringify(signatureParams);
+    const signature = (
+      await provider.send("eth_signTypedData_v3", [from, data])
+    ).substring(2);
     const r = "0x" + signature.substring(0, 64);
     const s = "0x" + signature.substring(64, 128);
+    const v = parseInt(signature.substring(128, 130), 16);
     return [v, r, s];
   } catch (e) {
     throw new Error(e);
   }
+};
+
+const getSignatureParams = (
+  domain: DomainDataType,
+  message: object,
+  messageType: Array<object>
+) => {
+  const delegateBySignature = {
+    types: {
+      EIP712Domain: Domain,
+      Message: messageType,
+    },
+    domain,
+    primaryType: "Message",
+    message,
+  };
+  return delegateBySignature;
 };

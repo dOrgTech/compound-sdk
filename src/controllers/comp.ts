@@ -1,8 +1,14 @@
 import Compound from "../compound";
 import { Controller } from "./core";
-import { CompoundContract, Address, ITransaction } from "../compound/types";
+import {
+  CompoundContract,
+  Address,
+  ITransaction,
+  SignatureType,
+  DelegatedAddress,
+} from "../compound/types";
 import { abi } from "../../contracts/comp";
-import { getNonce } from "../compound/utils";
+import { getContractNonce } from "../compound/utils";
 
 export class Comp extends Controller {
   private contract: CompoundContract;
@@ -17,16 +23,25 @@ export class Comp extends Controller {
       method: "delegate",
       args: [address],
     };
-    this._protocol.sendTx(this.contract, txObject, false);
+    this._protocol.sendTx(this.contract, txObject);
   }
 
-  public async delegateBySignature(address: Address) {
-    const nonce: string = await getNonce(this.contract);
+  public delegateBySignature(address: Address) {
+    const nonce: string = "0"; //await getContractNonce(this.contract);
     const expiry: number = Date.now() + 3600000;
     const txObject: ITransaction = {
-      method: "delegateBySignature",
+      method: "delegateBySig",
       args: [address, nonce, expiry],
     };
-    this._protocol.sendTx(this.contract, txObject, true);
+    const params: object = {
+      address,
+      nonce,
+      expiry,
+    };
+    const signatureObject: SignatureType = {
+      paramsDefinition: DelegatedAddress,
+      paramsValues: params,
+    };
+    this._protocol.sendTx(this.contract, txObject, signatureObject);
   }
 }

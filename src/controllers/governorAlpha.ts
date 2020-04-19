@@ -1,6 +1,12 @@
 import Compound from "../compound";
 import { Controller } from "./core";
-import { CompoundContract, ITransaction, Address } from "../compound/types";
+import {
+  CompoundContract,
+  ITransaction,
+  Address,
+  CastVote,
+  SignatureType,
+} from "../compound/types";
 import { abi } from "../../contracts/governorAlpha";
 
 export class GovernorAlpha extends Controller {
@@ -49,6 +55,22 @@ export class GovernorAlpha extends Controller {
       args: [address, values, signatures, calldatas, description],
     };
     return this._protocol.sendTx(this.contract, txObject);
+  }
+
+  public castVoteBySignature(proposalId: number, support: boolean) {
+    const txObject: ITransaction = {
+      method: "castVoteBySig",
+      args: [proposalId, support],
+    };
+    const params: object = {
+      proposalId,
+      support,
+    };
+    const signatureObject: SignatureType = {
+      paramsDefinition: CastVote,
+      paramsValues: params,
+    };
+    this._protocol.sendTx(this.contract, txObject, signatureObject);
   }
 
   // public borrow() {}

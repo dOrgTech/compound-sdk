@@ -1,9 +1,10 @@
 import { Contract } from "ethers/contract";
 import {
   AsyncSendable,
-  JsonRpcSigner,
+  JsonRpcSigner as Signer,
   TransactionResponse,
   Web3Provider,
+  JsonRpcProvider,
 } from "ethers/providers";
 import { BigNumber } from "ethers/utils";
 
@@ -23,37 +24,38 @@ export type Address = string;
 export type EthereumObject = AsyncSendable;
 
 export class EthereumProvider extends Web3Provider {}
+export class JSONProvider extends JsonRpcProvider {}
 
 export class CompoundContract extends Contract {}
 
-const Domain = [
+export type DomainDataType = {
+  name: string;
+  version: string;
+  chainId: number;
+  verifyingContract: Address;
+};
+
+export type SignatureType = {
+  paramsDefinition: Array<object>;
+  paramsValues: object;
+};
+
+export const Domain = [
   { name: "name", type: "string" },
   { name: "version", type: "string" },
   { name: "chainId", type: "uint256" },
   { name: "verifyingContract", type: "address" },
 ];
 
-const DelegatedAddress = [
+export const DelegatedAddress = [
   { name: "account", type: "address" },
   { name: "nonce", type: "uint256" },
   { name: "expiry", type: "uint" },
 ];
 
-const CastVote = [
+export const CastVote = [
   { name: "proposalId", type: "uint256" },
   { name: "support", type: "bool" },
 ];
 
-export const MethodTypes = {
-  delegateBySignature: {
-    types: {
-      EIP712Domain: Domain,
-      Message: DelegatedAddress, // needs to be dynamic
-    },
-    domain: domainData, // needs to be dynamic
-    primaryType: "Message",
-    message: params, // needs to be dynamic
-  },
-};
-
-export { JsonRpcSigner, TransactionResponse, BigNumber };
+export { Signer, TransactionResponse, BigNumber };

@@ -4,6 +4,7 @@ import {
   estimateGas,
   toEther,
   deployContract,
+  getContractNonce,
 } from "../../src/compound/utils";
 import {
   EthereumProvider,
@@ -47,7 +48,19 @@ describe("Utils ", () => {
       method: "delegate",
       args: ["0x61FfE691821291D02E9Ba5D33098ADcee71a3a17"],
     };
-    const gas: Number = await estimateGas(contract, tx);
+    const gas: number = await estimateGas(contract, tx);
     expect(gas).toBeGreaterThan(10000);
+  });
+
+  it("Get contract tx nonce ", async () => {
+    const contract: CompoundContract = await deployContract(
+      abi,
+      byteCode,
+      getSigner(provider),
+      ["0x61FfE691821291D02E9Ba5D33098ADcee71a3a17"]
+    );
+    const nonce: string = await getContractNonce(contract);
+    console.log(nonce);
+    expect(nonce).toBeTruthy();
   });
 });
