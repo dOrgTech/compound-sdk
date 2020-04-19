@@ -8,7 +8,7 @@ import {
 } from "../../src/compound/utils";
 import {
   EthereumProvider,
-  JsonRpcSigner,
+  Signer,
   Address,
   CompoundContract,
   ITransaction,
@@ -28,8 +28,8 @@ describe("Utils ", () => {
   });
 
   it("Get signer ", () => {
-    const signer: JsonRpcSigner = getSigner(provider);
-    expect(signer).toBeInstanceOf(JsonRpcSigner);
+    const signer: Signer = getSigner(provider);
+    expect(signer).toBeInstanceOf(Signer);
   });
 
   it("From wei to ether ", () => {

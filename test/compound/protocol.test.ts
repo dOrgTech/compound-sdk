@@ -30,7 +30,7 @@ describe("Compound with web3provider", () => {
   it("Should throw error because provider was already given", async () => {
     const protocol = new Compound(ethereumObject);
     expect(() => protocol.updateProvider(ethereumObject)).toThrowError(
-      "Provider already instanciated"
+      "Provider already instantiated"
     );
   });
 
