@@ -11,6 +11,7 @@ import { abi } from "../../contracts/governorAlpha";
 
 export class GovernorAlpha extends Controller {
   private contract: CompoundContract;
+  private name: string = "GovernorAlpha";
   private address: string = "0xc5BFEd3Bb38a3C4078d4f130F57Ca4c560551d45"; // ropsten address
   constructor(protocol: Compound) {
     super(protocol);

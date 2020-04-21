@@ -29,9 +29,10 @@ export const estimateGas = async (
 };
 
 export const getContractNonce = async (
+  provider: EthereumProvider,
   contract: CompoundContract
-): Promise<string> => {
-  return await contract.getTransactionCount(contract.address);
+): Promise<number> => {
+  return await provider.getTransactionCount(contract.address);
 };
 
 export const toEther = (wei: string): string => {
@@ -58,11 +59,11 @@ export const signMessage = async (
 ): Promise<(string | number)[]> => {
   const from = await getAccount(provider);
   try {
-    const network = await provider.getNetwork();
+    const chainId = await getNetworkId(provider);
     const domainData = {
       name: "Compound Protocol",
       version: "1",
-      chainId: network.chainId,
+      chainId,
       verifyingContract: contract.address,
     };
     const signatureParams = getSignatureParams(domainData, params, method);
@@ -77,6 +78,11 @@ export const signMessage = async (
   } catch (e) {
     throw new Error(e);
   }
+};
+
+export const getNetworkId = async (provider: EthereumProvider) => {
+  const network = await provider.getNetwork();
+  return network.chainId;
 };
 
 const getSignatureParams = (
@@ -94,4 +100,33 @@ const getSignatureParams = (
     message,
   };
   return delegateBySignature;
+};
+
+export const getNetworkName = (id: number): string => {
+  switch (id) {
+    case 1:
+      return "mainnet";
+    case 3:
+      return "ropsten";
+    case 4:
+      return "rinkeby";
+    case 5:
+      return "goerli";
+    case 42:
+      return "kovan";
+    default:
+      return "mainnet";
+  }
+};
+
+export const decodeContents = async (abiUrl: string, contractUrl: string) => {
+  const abi = await getContent(abiUrl);
+  const contractAddress = await getContent(contractUrl);
+  return { abi, contractAddress };
+};
+
+const getContent = async (url: string) => {
+  const response = await fetch(url);
+  const result = await response.json();
+  return atob(result.content);
 };

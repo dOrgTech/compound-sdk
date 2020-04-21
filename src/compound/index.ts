@@ -20,7 +20,7 @@ export default class Compound {
   }
 
   public comp(): Comp {
-    return new Comp(this);
+    return new Comp(this, this._provider);
   }
 
   constructor(ethereumObject: EthereumObject | string) {

@@ -52,15 +52,14 @@ describe("Utils ", () => {
     expect(gas).toBeGreaterThan(10000);
   });
 
-  // it("Get contract tx nonce ", async () => {
-  //   const contract: CompoundContract = await deployContract(
-  //     abi,
-  //     byteCode,
-  //     getSigner(provider),
-  //     ["0x61FfE691821291D02E9Ba5D33098ADcee71a3a17"]
-  //   );
-  //   const nonce: string = await getContractNonce(contract);
-  //   console.log(nonce);
-  //   expect(nonce).toBeTruthy();
-  // });
+  it("Get contract tx nonce ", async () => {
+    const contract: CompoundContract = await deployContract(
+      abi,
+      byteCode,
+      getSigner(provider),
+      ["0x61FfE691821291D02E9Ba5D33098ADcee71a3a17"]
+    );
+    const nonce: number = await getContractNonce(provider, contract);
+    expect(nonce).toBeTruthy();
+  });
 });
