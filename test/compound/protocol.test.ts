@@ -1,4 +1,4 @@
-import Compound from "../../src/compound";
+import Compound from "../../src/compound/core";
 import {
   CompoundContract,
   EthereumProvider,
@@ -38,7 +38,7 @@ describe("Compound with web3provider", () => {
     const protocol = new Compound(ethereumObject);
     const contractInstance = protocol.getContract(
       "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1",
-      "[]"
+      []
     );
     expect(contractInstance).toBeInstanceOf(CompoundContract);
     expect(contractInstance.address).toEqual(

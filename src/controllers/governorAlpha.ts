@@ -12,7 +12,7 @@ export class GovernorAlpha extends Controller {
   private contract: CompoundContract;
   constructor(protocol: IProtocol, address: string, abi: Array<any>) {
     super(protocol);
-    this.contract = this._protocol.getContract(address, JSON.stringify(abi));
+    this.contract = this._protocol.getContract(address, abi);
   }
 
   public quorumVotes() {

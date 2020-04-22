@@ -31,7 +31,6 @@ export class CompoundContract extends Contract {}
 
 export type DomainDataType = {
   name: string;
-  version: string;
   chainId: number;
   verifyingContract: Address;
 };
@@ -43,15 +42,14 @@ export type SignatureType = {
 
 export const Domain = [
   { name: "name", type: "string" },
-  { name: "version", type: "string" },
   { name: "chainId", type: "uint256" },
   { name: "verifyingContract", type: "address" },
 ];
 
 export const DelegatedAddress = [
-  { name: "account", type: "address" },
+  { name: "delegatee", type: "address" },
   { name: "nonce", type: "uint256" },
-  { name: "expiry", type: "uint" },
+  { name: "expiry", type: "uint256" },
 ];
 
 export const CastVote = [

@@ -8,11 +8,7 @@ import {
   SignatureType,
   JSONProvider,
 } from "./types";
-import {
-  getNetworkName,
-  decodeContents,
-  getNetworkId,
-} from "../compound/utils";
+import { getNetworkName, decodeContents, getNetworkId } from "./utils";
 import { getSigner, estimateGas, signMessage } from "./utils";
 import { Comp } from "../controllers/comp";
 import { GovernorAlpha } from "../controllers/governorAlpha";
@@ -43,7 +39,7 @@ export default class Compound implements IProtocol {
 
   public async comp(): Promise<Comp> {
     const { contractAddress, abi } = await this.setContractData("Comp");
-    return new Comp(this, this._provider, contractAddress, abi);
+    return new Comp(this, contractAddress, abi);
   }
 
   constructor(ethereumObject: EthereumObject | string) {
@@ -62,9 +58,9 @@ export default class Compound implements IProtocol {
     return this;
   }
 
-  public getContract(address: string, abi: string): CompoundContract {
+  public getContract(address: string, abi: Array<object>): CompoundContract {
     const account: Signer = getSigner(this._provider);
-    return new CompoundContract(address, abi, account);
+    return new CompoundContract(address, JSON.stringify(abi), account);
   }
 
   public async sendTx(

@@ -42,12 +42,12 @@ export const toEther = (wei: string): string => {
 };
 
 export const deployContract = async (
-  abi: string,
+  abi: Array<object>,
   bytecode: string,
   signer: Signer,
   params: Array<any>
 ): Promise<CompoundContract> => {
-  let factory = new ContractFactory(abi, bytecode, signer);
+  let factory = new ContractFactory(JSON.stringify(abi), bytecode, signer);
   let contract = await factory.deploy(...params);
   await contract.deployed();
   return contract;
@@ -63,8 +63,7 @@ export const signMessage = async (
   try {
     const chainId = await getNetworkId(provider);
     const domainData = {
-      name: "Compound Protocol",
-      version: "1",
+      name: "Compound",
       chainId,
       verifyingContract: contract.address,
     };
@@ -125,7 +124,7 @@ export const decodeContents = async (
   contractName: string,
   abiUrl: string,
   contractUrl: string
-) => {
+): Promise<any> => {
   const abi = await getContent(contractName, abiUrl);
   const contractAddress = await getContent(contractName, contractUrl, true);
   return { abi, contractAddress };
