@@ -56,7 +56,7 @@ export class GovernorAlpha extends Controller {
   }
 
   public propose(
-    address: Array<Address>,
+    addresses: Array<Address>,
     values: Array<number>,
     signatures: Array<string>,
     calldatas: Array<string>,
@@ -64,7 +64,7 @@ export class GovernorAlpha extends Controller {
   ) {
     const txObject: ITransaction = {
       method: "propose",
-      args: [address, values, signatures, calldatas, description],
+      args: [addresses, values, signatures, calldatas, description],
     };
     return this._protocol.sendTx(this.contract, txObject);
   }
