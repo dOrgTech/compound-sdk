@@ -1,4 +1,3 @@
-import Compound from "../compound";
 import { Controller } from "./core";
 import {
   CompoundContract,
@@ -8,16 +7,19 @@ import {
   DelegatedAddress,
   EthereumProvider,
 } from "../compound/types";
-import { abi } from "../../contracts/comp";
 import { getContractNonce } from "../compound/utils";
+import { IProtocol } from "../compound/IProtocol";
 
 export class Comp extends Controller {
   private contract: CompoundContract;
-  private name: string = "Comp";
-  private address: string = "0x1Fe16De955718CFAb7A44605458AB023838C2793"; // ropsten address
-  constructor(protocol: Compound, provider: EthereumProvider) {
+  constructor(
+    protocol: IProtocol,
+    provider: EthereumProvider,
+    address: string,
+    abi: Array<any>
+  ) {
     super(protocol, provider);
-    this.contract = this._protocol.getContract(this.address, abi);
+    this.contract = this._protocol.getContract(address, JSON.stringify(abi));
   }
 
   public delegate(address: Address) {
@@ -25,11 +27,12 @@ export class Comp extends Controller {
       method: "delegate",
       args: [address],
     };
-    this._protocol.sendTx(this.contract, txObject);
+    return this._protocol.sendTx(this.contract, txObject);
   }
 
   public async delegateBySignature(address: Address) {
     const nonce: number = await getContractNonce(this._provider, this.contract);
+    console.log(nonce);
     const expiry: number = Date.now() + 3600000; // expires in one (1) hour
     const txObject: ITransaction = {
       method: "delegateBySig",
@@ -45,5 +48,21 @@ export class Comp extends Controller {
       paramsValues: params,
     };
     return this._protocol.sendTx(this.contract, txObject, signatureObject);
+  }
+
+  public getCurrentVotes(address: Address) {
+    const txObject: ITransaction = {
+      method: "getCurrentVotes",
+      args: [address],
+    };
+    return this._protocol.callTx(this.contract, txObject);
+  }
+
+  public getPriorVotes(account: Address, blockNumber: number) {
+    const txObject: ITransaction = {
+      method: "getPriorVotes",
+      args: [account, blockNumber],
+    };
+    return this._protocol.callTx(this.contract, txObject);
   }
 }

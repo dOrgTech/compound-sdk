@@ -29,7 +29,7 @@ describe("Compound with web3provider", () => {
 
   it("Should throw error because provider was already given", async () => {
     const protocol = new Compound(ethereumObject);
-    expect(() => protocol.updateProvider(ethereumObject)).toThrowError(
+    expect(() => protocol.makeSendable(ethereumObject)).toThrowError(
       "Provider already instantiated"
     );
   });
@@ -69,7 +69,7 @@ describe("Compound with web3provider", () => {
   });
 });
 
-describe("Compoud wth JSON provider", () => {
+describe("Compound with JSON provider", () => {
   it("Protocol instance when passing url", () => {
     const protocol = new Compound("http://localhost:8545");
     expect(protocol).toBeInstanceOf(Compound);
@@ -77,7 +77,7 @@ describe("Compoud wth JSON provider", () => {
 
   it("Update provider to send transactions", () => {
     const protocol = new Compound("http://localhost:8545");
-    const updateProtocol = protocol.updateProvider(ethereumObject);
+    const updateProtocol = protocol.makeSendable(ethereumObject);
     expect(updateProtocol).toBeTruthy();
   });
 });

@@ -1,5 +1,7 @@
 import { formatEther } from "ethers/utils";
 import { ContractFactory } from "ethers/contract";
+import fetch from "node-fetch";
+import { Base64 } from "js-base64";
 import {
   EthereumProvider,
   CompoundContract,
@@ -119,14 +121,25 @@ export const getNetworkName = (id: number): string => {
   }
 };
 
-export const decodeContents = async (abiUrl: string, contractUrl: string) => {
-  const abi = await getContent(abiUrl);
-  const contractAddress = await getContent(contractUrl);
+export const decodeContents = async (
+  contractName: string,
+  abiUrl: string,
+  contractUrl: string
+) => {
+  const abi = await getContent(contractName, abiUrl);
+  const contractAddress = await getContent(contractName, contractUrl, true);
   return { abi, contractAddress };
 };
 
-const getContent = async (url: string) => {
+const getContent = async (
+  contractName: string,
+  url: string,
+  isContract: boolean = false
+) => {
   const response = await fetch(url);
   const result = await response.json();
-  return atob(result.content);
+  const information = JSON.parse(Base64.decode(result.content));
+  return isContract
+    ? information["Contracts"][contractName]
+    : information[contractName];
 };

@@ -24,6 +24,7 @@ export type Address = string;
 export type EthereumObject = AsyncSendable;
 
 export class EthereumProvider extends Web3Provider {}
+
 export class JSONProvider extends JsonRpcProvider {}
 
 export class CompoundContract extends Contract {}

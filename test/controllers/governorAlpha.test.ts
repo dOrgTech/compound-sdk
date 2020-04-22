@@ -9,8 +9,8 @@ beforeAll(() => {
 });
 
 describe("Governor alpha ", () => {
-  it("Can be initialized ", () => {
-    const gov = protocol.governorAlpha();
+  it("Can be initialized ", async () => {
+    const gov = await protocol.governorAlpha();
     expect(gov).toBeInstanceOf(GovernorAlpha);
   });
 });

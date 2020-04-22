@@ -8,19 +8,42 @@ import {
   SignatureType,
   JSONProvider,
 } from "./types";
+import {
+  getNetworkName,
+  decodeContents,
+  getNetworkId,
+} from "../compound/utils";
 import { getSigner, estimateGas, signMessage } from "./utils";
 import { Comp } from "../controllers/comp";
 import { GovernorAlpha } from "../controllers/governorAlpha";
+import { IProtocol } from "./IProtocol";
 
-export default class Compound {
+export default class Compound implements IProtocol {
   private _provider: EthereumProvider;
 
-  public governorAlpha(): GovernorAlpha {
-    return new GovernorAlpha(this);
+  private async setContractData(contractName: string) {
+    const network = await getNetworkId(this._provider);
+    const name = getNetworkName(network);
+    const abiUrl = `https://api.github.com/repos/compound-finance/compound-protocol/contents/networks/${name}-abi.json`;
+    const contracts = `https://api.github.com/repos/compound-finance/compound-protocol/contents/networks/${name}.json`;
+    const { contractAddress, abi } = await decodeContents(
+      contractName,
+      abiUrl,
+      contracts
+    );
+    return { contractAddress, abi };
   }
 
-  public comp(): Comp {
-    return new Comp(this, this._provider);
+  public async governorAlpha(): Promise<GovernorAlpha> {
+    const { contractAddress, abi } = await this.setContractData(
+      "GovernorAlpha"
+    );
+    return new GovernorAlpha(this, contractAddress, abi);
+  }
+
+  public async comp(): Promise<Comp> {
+    const { contractAddress, abi } = await this.setContractData("Comp");
+    return new Comp(this, this._provider, contractAddress, abi);
   }
 
   constructor(ethereumObject: EthereumObject | string) {
@@ -31,7 +54,7 @@ export default class Compound {
     }
   }
 
-  public updateProvider(ethereumObject: EthereumObject): Compound {
+  public makeSendable(ethereumObject: EthereumObject): Compound {
     if (this._provider._web3Provider) {
       throw new Error("Provider already instantiated");
     }
