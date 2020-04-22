@@ -4,15 +4,16 @@ import {
   estimateGas,
   toEther,
   deployContract,
+  getContractNonce,
 } from "../../src/compound/utils";
 import {
   EthereumProvider,
-  JsonRpcSigner,
+  Signer,
   Address,
   CompoundContract,
   ITransaction,
 } from "../../src/compound/types";
-import { abi, bytecode } from "../mockContract";
+import { abi, byteCode } from "../../contracts/comp";
 
 let provider: EthereumProvider;
 const ethereumObject = require("ganache-cli").provider();
@@ -27,8 +28,8 @@ describe("Utils ", () => {
   });
 
   it("Get signer ", () => {
-    const signer: JsonRpcSigner = getSigner(provider);
-    expect(signer).toBeInstanceOf(JsonRpcSigner);
+    const signer: Signer = getSigner(provider);
+    expect(signer).toBeInstanceOf(Signer);
   });
 
   it("From wei to ether ", () => {
@@ -39,15 +40,26 @@ describe("Utils ", () => {
   it("Get gas estimation ", async () => {
     const contract: CompoundContract = await deployContract(
       abi,
-      bytecode,
+      byteCode,
       getSigner(provider),
-      "Hello world"
+      ["0x61FfE691821291D02E9Ba5D33098ADcee71a3a17"]
     );
     const tx: ITransaction = {
-      method: "setValue",
-      args: ["New name"],
+      method: "delegate",
+      args: ["0x61FfE691821291D02E9Ba5D33098ADcee71a3a17"],
     };
-    const gas: Number = await estimateGas(contract, tx);
+    const gas: number = await estimateGas(contract, tx);
     expect(gas).toBeGreaterThan(10000);
+  });
+
+  it("Get contract tx nonce ", async () => {
+    const contract: CompoundContract = await deployContract(
+      abi,
+      byteCode,
+      getSigner(provider),
+      ["0x61FfE691821291D02E9Ba5D33098ADcee71a3a17"]
+    );
+    const nonce: number = await getContractNonce(provider, contract);
+    expect(nonce).toBeTruthy();
   });
 });

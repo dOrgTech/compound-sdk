@@ -1,18 +1,113 @@
-import Compound from "../compound";
+import { IProtocol } from "../compound/IProtocol";
 import { Controller } from "./core";
-import { CompoundContract, ITransaction, Address } from "../compound/types";
-import abi from "../../contracts/governorAlpha.json";
+import {
+  CompoundContract,
+  ITransaction,
+  Address,
+  CastVote,
+  SignatureType,
+} from "../compound/types";
 
 export class GovernorAlpha extends Controller {
   private contract: CompoundContract;
-  private address: string = "0xc5BFEd3Bb38a3C4078d4f130F57Ca4c560551d45"; // ropsten address
-  private abi: string = JSON.stringify(abi);
-  constructor(protocol: Compound) {
+  constructor(protocol: IProtocol, address: string, abi: Array<any>) {
     super(protocol);
-    this.contract = this._protocol.getContract(this.address, this.abi);
+    this.contract = this._protocol.getContract(address, abi);
   }
 
-  // all methods from governor alpha.sol
+  public quorumVotes() {
+    const txObject: ITransaction = {
+      method: "quorumVotes",
+      args: [],
+    };
+    return this._protocol.callTx(this.contract, txObject);
+  }
+
+  public proposalThreshold() {
+    const txObject: ITransaction = {
+      method: "proposalThreshold",
+      args: [],
+    };
+    return this._protocol.callTx(this.contract, txObject);
+  }
+
+  public proposalMaxOperations() {
+    const txObject: ITransaction = {
+      method: "proposalMaxOperations",
+      args: [],
+    };
+    return this._protocol.callTx(this.contract, txObject);
+  }
+
+  public votingDelay() {
+    const txObject: ITransaction = {
+      method: "votingDelay",
+      args: [],
+    };
+    return this._protocol.callTx(this.contract, txObject);
+  }
+
+  public votingPeriod() {
+    const txObject: ITransaction = {
+      method: "votingPeriod",
+      args: [],
+    };
+    return this._protocol.callTx(this.contract, txObject);
+  }
+
+  public propose(
+    addresses: Array<Address>,
+    values: Array<number>,
+    signatures: Array<string>,
+    calldatas: Array<string>,
+    description: string
+  ) {
+    const txObject: ITransaction = {
+      method: "propose",
+      args: [addresses, values, signatures, calldatas, description],
+    };
+    return this._protocol.sendTx(this.contract, txObject);
+  }
+
+  public queue(proposalId: number) {
+    const txObject: ITransaction = {
+      method: "queue",
+      args: [proposalId],
+    };
+    return this._protocol.sendTx(this.contract, txObject);
+  }
+
+  public execute(proposalId: number) {
+    const txObject: ITransaction = {
+      method: "execute",
+      args: [proposalId],
+    };
+    return this._protocol.sendTx(this.contract, txObject);
+  }
+
+  public cancel(proposalId: number) {
+    const txObject: ITransaction = {
+      method: "cancel",
+      args: [proposalId],
+    };
+    return this._protocol.sendTx(this.contract, txObject);
+  }
+
+  public getActions(proposalId: number) {
+    const txObject: ITransaction = {
+      method: "getActions",
+      args: [proposalId],
+    };
+    return this._protocol.callTx(this.contract, txObject);
+  }
+
+  public getReceipt(proposalId: number, voter: Address) {
+    const txObject: ITransaction = {
+      method: "getReceipt",
+      args: [proposalId, voter],
+    };
+    return this._protocol.callTx(this.contract, txObject);
+  }
 
   public state(proposalId: number) {
     const txObject: ITransaction = {
@@ -30,32 +125,19 @@ export class GovernorAlpha extends Controller {
     return this._protocol.sendTx(this.contract, txObject);
   }
 
-  public queue(proposalId: number) {
+  public castVoteBySignature(proposalId: number, support: boolean) {
     const txObject: ITransaction = {
-      method: "queue",
-      args: [proposalId],
+      method: "castVoteBySig",
+      args: [proposalId, support],
     };
-    return this._protocol.sendTx(this.contract, txObject);
-  }
-
-  public propose(
-    address: Array<Address>,
-    values: Array<number>,
-    signatures: Array<string>,
-    calldatas: Array<string>,
-    description: string
-  ) {
-    const txObject: ITransaction = {
-      method: "propose",
-      args: [address, values, signatures, calldatas, description],
+    const params: object = {
+      proposalId,
+      support,
     };
-    return this._protocol.sendTx(this.contract, txObject);
+    const signatureObject: SignatureType = {
+      paramsDefinition: CastVote,
+      paramsValues: params,
+    };
+    this._protocol.sendTx(this.contract, txObject, signatureObject);
   }
-
-  // public delegate() {
-  //   const txObject: any = {};
-  //   this._protocol.sendTx(this.contract, txObject);
-  // }
-
-  // public borrow() {}
 }
