@@ -17,7 +17,7 @@ import { IProtocol } from "./IProtocol";
 export default class Compound implements IProtocol {
   private _provider: EthereumProvider;
 
-  private async setContractData(contractName: string) {
+  private async _setContractData(contractName: string) {
     const network = await getNetworkId(this._provider);
     const name = getNetworkName(network);
     const abiUrl = `https://api.github.com/repos/compound-finance/compound-protocol/contents/networks/${name}-abi.json`;
@@ -30,24 +30,24 @@ export default class Compound implements IProtocol {
     return { contractAddress, abi };
   }
 
-  public async governorAlpha(): Promise<GovernorAlpha> {
-    const { contractAddress, abi } = await this.setContractData(
-      "GovernorAlpha"
-    );
-    return new GovernorAlpha(this, contractAddress, abi);
-  }
-
-  public async comp(): Promise<Comp> {
-    const { contractAddress, abi } = await this.setContractData("Comp");
-    return new Comp(this, contractAddress, abi);
-  }
-
   constructor(ethereumObject: EthereumObject | string) {
     if (typeof ethereumObject === "string") {
       this._provider = new JSONProvider(ethereumObject) as EthereumProvider;
     } else {
       this._provider = new EthereumProvider(ethereumObject as EthereumObject);
     }
+  }
+
+  public async governorAlpha(): Promise<GovernorAlpha> {
+    const { contractAddress, abi } = await this._setContractData(
+      "GovernorAlpha"
+    );
+    return new GovernorAlpha(this, contractAddress, abi);
+  }
+
+  public async comp(): Promise<Comp> {
+    const { contractAddress, abi } = await this._setContractData("Comp");
+    return new Comp(this, contractAddress, abi);
   }
 
   public makeSendable(ethereumObject: EthereumObject): Compound {
@@ -105,7 +105,7 @@ export default class Compound implements IProtocol {
     try {
       return await contract[tx.method](...tx.args);
     } catch (error) {
-      throw new Error(error);
+      throw new Error(error.message);
     }
   }
 }

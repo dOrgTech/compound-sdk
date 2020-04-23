@@ -1,3 +1,3 @@
-import Compound from "./compound/core";
+import Compound from "./compound/main";
 
 export default Compound;

@@ -8,7 +8,7 @@ import {
 } from "./types";
 import { GovernorAlpha } from "../controllers/governorAlpha";
 import { Comp } from "../controllers/comp";
-import Compound from "./core";
+import Compound from "./main";
 
 export interface IProtocol {
   governorAlpha(): Promise<GovernorAlpha>;

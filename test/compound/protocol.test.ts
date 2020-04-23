@@ -1,4 +1,4 @@
-import Compound from "../../src/compound/core";
+import Compound from "../../src/compound/main";
 import {
   CompoundContract,
   EthereumProvider,
