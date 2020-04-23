@@ -6,7 +6,7 @@ import {
   BigNumber,
 } from "../../src/compound/types";
 import { deployContract, getSigner } from "../../src/compound/utils";
-import { abi, byteCode } from "../../contracts/comp";
+import { abi, byteCode } from "../controllers/contracts/comp";
 
 const ethereumObject = require("ganache-cli").provider();
 let contract: CompoundContract;

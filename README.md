@@ -30,6 +30,7 @@ First, we apply the IoC principle by making the Main class dependent of an inter
 
 **Types file** is the only piece that interacts directly with Ether.js. This faciliates the debuging/change of the library regarding the interaction with blockchain modules.
 
+
 Lastly, the **controllers modules** allow the developer to interact with the Governor Alpha and Comp contracts:
 
 <p float="center">
@@ -40,15 +41,15 @@ The developer can interact with every method of the contract once the SDK has be
 
 ## Usage
 
-First of all, make sure you have node `v10.16.3` installed.
+First of all, make sure you have node version `>= 10.16.3` installed.
 Then, do:
 
-`npm i --save @dorgtech/sdk-compound`
+`npm i --save compound-sdk`
 
 Now you can utilize the SDK in your Javascript App:
 
 ```
-import Compound from '@dorgtech/sdk-compound'
+import Compound from 'compound-sdk'
 ```
 
 There are two ways to initialize your SDK:
@@ -73,3 +74,5 @@ sdk.makeSendable(web3provider) // make sure you send the currentProvider or it m
 ```
 
 After setting up a web3provider, you can trigger call and send methods - please check [the official documentation of the Compound Governance contracts](https://compound.finance/docs/governance) to understand the methods.
+
+

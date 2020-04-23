@@ -138,6 +138,6 @@ export class GovernorAlpha extends Controller {
       paramsDefinition: CastVote,
       paramsValues: params,
     };
-    this._protocol.sendTx(this.contract, txObject, signatureObject);
+    return this._protocol.sendTx(this.contract, txObject, signatureObject);
   }
 }

@@ -1,4 +1,4 @@
-import { formatEther } from "ethers/utils";
+import { formatEther, bigNumberify } from "ethers/utils";
 import { ContractFactory } from "ethers/contract";
 import fetch from "node-fetch";
 import { Base64 } from "js-base64";
@@ -20,6 +20,10 @@ export const getAccount = async (
 
 export const getSigner = (provider: EthereumProvider): Signer => {
   return provider.getSigner();
+};
+
+export const toBigNumber = (number: string | number) => {
+  return bigNumberify(number);
 };
 
 export const estimateGas = async (
@@ -135,10 +139,17 @@ const getContent = async (
   url: string,
   isContract: boolean = false
 ) => {
-  const response = await fetch(url);
-  const result = await response.json();
-  const information = JSON.parse(Base64.decode(result.content));
-  return isContract
-    ? information["Contracts"][contractName]
-    : information[contractName];
+  try {
+    const response = await fetch(url);
+    const result = await response.json();
+    const information = JSON.parse(Base64.decode(result.content));
+    return isContract
+      ? information["Contracts"][contractName]
+      : information[contractName];
+  } catch (e) {
+    console.log(e.message);
+    throw new Error(
+      "An error has happened when trying to retreive contracts information, maybe you should check your internet connection?"
+    );
+  }
 };
