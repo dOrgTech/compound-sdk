@@ -5,7 +5,7 @@ import {
   CompoundContract,
   BigNumber,
 } from "../../src/compound/types";
-import { abi, byteCode } from "../../contracts/comp";
+import { abi, byteCode } from "./contracts/comp";
 import * as utils from "../../src/compound/utils";
 
 let protocol: Compound;

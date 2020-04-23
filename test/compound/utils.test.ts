@@ -13,7 +13,7 @@ import {
   CompoundContract,
   ITransaction,
 } from "../../src/compound/types";
-import { abi, byteCode } from "../../contracts/comp";
+import { abi, byteCode } from "../controllers/contracts/comp";
 
 let provider: EthereumProvider;
 const ethereumObject = require("ganache-cli").provider();

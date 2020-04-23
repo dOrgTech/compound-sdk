@@ -22,13 +22,11 @@ The architecture of this wrapper is the following:
   <img src="./docs/wrapper-architecture.png" width="60%"/>
 </p>
 
-First, we apply the IoC principle by making the Main class dependent of an interface, this way, if this class is changed, the dependent class of it wont be changed.
-
 Main class has the core functionalities of the SDK, which are, `getContract`, `callTx` and `sendTx`; also, it has the capacity to retrieve the information of the contracts dinamically, making a request to the [Compound repository](https://github.com/compound-finance/compound-protocol/tree/master/networks), this way we make sure that the latest ABI and address are retrieved and the library keeps updated without the need of changing the code.
 
-Utils file allow the user to use every method of the Ether.js library in any way he wants
+Utils file allow the user to use every method of the ethers.js library in any way he wants
 
-Types file is the only one that interacts directly with Ether.js - This faciliates the debuging/change of the library regarding the interaction with blockchain modules
+Types file is the only one that interacts directly with ethers.js - This faciliates the debuging/change of the library regarding the interaction with blockchain modules
 
 Then, there's the controllers modules, these allows the developer to interact with the Governor Alpha and Comp contracts:
 
@@ -40,24 +38,22 @@ The developer can interact with every method of the contract once the SDK has be
 
 ## Usage
 
-First of all, make sure you have node `v10.16.3` installed.
+First of all, make sure you have node version `>= 10.16.3` installed.
 Then, do:
 
-`npm i --save @dorgtech/sdk-compound`
+`npm i --save compound-sdk`
 
 This way, you can do in your Javascript App:
 
 ```
-import Compound from '@dorgtech/sdk-compound'
+import Compound from 'compound-sdk'
 ```
 
 There's two ways to initialize your SDK
 
-1- By passing a node URL, but you wont be able to send transactions (or write into the blockchain)
+- By passing a node url, but you wont be able to send transactions (or write into the blockchain)
 
-2- By passing the provider object (i.e: metamask)
-
-This way, we allow the developer to pass an URL and read the blockchain, but if the user then wants to trigger a tx it needs to login into the browser; so for example, at first you just pass the URL:
+This way, we allow the developer to pass an url and read the blockchain, but if the user then wants to trigger a tx it needs to login into the browser; so for example, at first you just pass the URL:
 
 ```
 const sdk = new Compound("http://mainnet.infura.io/v3/your_api)
@@ -72,4 +68,6 @@ Trying to call a [Non-Constant](https://docs.ethers.io/ethers.js/html/api-contra
 sdk.makeSendable(web3provider) // make sure you send the currentProvider or it might fail
 ```
 
-After setting up a web3provider, you can trigger call and send methods - Please check [The official documentation of these contrancts](https://compound.finance/docs/governance) to make sure which method you can call
+- By passing the provider object (i.e: metamask)
+
+After setting up a web3provider, you can trigger call and send methods - Please check [The official documentation of these contracts](https://compound.finance/docs/governance) to make sure which method you can interact with
