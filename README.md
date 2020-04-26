@@ -52,7 +52,7 @@ Or, for `Comp` contract:
 
 ```
 const delegatee = "0x";
-const comp = await sdk.delegate();
+const comp = await sdk.comp();
 await comp.delegate(delegatee)
 ```
 
