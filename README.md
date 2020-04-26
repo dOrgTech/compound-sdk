@@ -40,35 +40,20 @@ sdk.makeSendable(web3provider) // make sure you send the currentProvider or it m
 
 After setting up a web3provider, you can trigger call and send methods - please check [the official documentation of the Compound Governance contracts](https://compound.finance/docs/governance) to understand the methods.
 
-## Architecture
+This way, if you want to interact with the `GovernorAlpha` contract for example, you can do:
 
-The SDK is composed of three main components: The Compound Protocol, Governor Alpha, and Comp.
+```
+const proposalId = 1;
+const governor = await sdk.governorAlpha();
+await governor.castVote(proposalId, true);
+```
 
-<p float="center">
-  <img src="./docs/main-comunication.png" width="60%"/>
-</p>
+Or, for `Comp` contract:
 
-The UI will talk directly with the wrapper of the procotol, which is based on the [Ether.js](https://github.com/ethers-io/ethers.js/) library, making it super light weight and mobile friendly.
+```
+const delegatee = "0x";
+const comp = await sdk.delegate();
+await comp.delegate(delegatee)
+```
 
-The architecture of this wrapper is the following:
-
-<p float="center">
-  <img src="./docs/wrapper-architecture.png" width="60%"/>
-</p>
-
-First, we apply the IoC principle by making the Main class dependent of an interface. This way, if this class is changed, its dependent class won't be changed.
-
-**Main class** contains the SDK's core functionalities: `getContract`, `callTx` and `sendTx`. It can also retrieve info from contracts dynamically, making a request to the [Compound repository](https://github.com/compound-finance/compound-protocol/tree/master/networks). This way, the latest ABI and address are retrieved and the library keeps up-to-date without the need to change the code.
-
-**Utils file** allows the developer to use every method of the Ether.js library in any way.
-
-**Types file** is the only piece that interacts directly with Ether.js. This faciliates the debuging/change of the library regarding the interaction with blockchain modules.
-
-
-Lastly, the **controllers modules** allow the developer to interact with the Governor Alpha and Comp contracts:
-
-<p float="center">
-  <img src="./docs/controller-architecture.png" width="60%"/>
-</p>
-
-The developer can interact with every method of the contract once the SDK has been initalized with the expected params.
+You can check the architecture details [here](./docs/architecture.md)
